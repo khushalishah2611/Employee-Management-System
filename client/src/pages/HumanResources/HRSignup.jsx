@@ -44,9 +44,11 @@ export const HRSignupPage = () => {
     }
 
 
-    if (HRState.error.status) {
-        loadingbar.current.complete()
-    }
+    useEffect(() => {
+        if (HRState.error.status) {
+            loadingbar.current?.complete()
+        }
+    }, [HRState.error.status])
 
     useEffect(() => {
         if (!HRState.isAuthenticated && !HRState.isVerified) {
@@ -55,12 +57,12 @@ export const HRSignupPage = () => {
         }
 
         if (HRState.isAuthenticated && HRState.isVerified) {
-            loadingbar.current.complete()
+            loadingbar.current?.complete()
             navigate("/HR/dashboard/dashboard-data")
         }
 
         if (HRState.isAuthenticated && !HRState.isVerified) {
-            loadingbar.current.complete()
+            loadingbar.current?.complete()
             navigate("/auth/HR/verify-email")
         }
     }, [HRState.isAuthenticated, HRState.isVerified])
