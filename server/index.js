@@ -28,9 +28,17 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 
 
+const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:5173"].filter(Boolean)
+
 app.use(cors({
-  origin: process.env.CLIENT_URL, // Adjust this to match your front-end origin exactly
-  credentials: true, // This is optional and depends on whether you’re using cookies
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true)
+    }
+
+    return callback(new Error("Not allowed by CORS"))
+  },
+  credentials: true,
 }));
 // app.options('*', cors())
 
