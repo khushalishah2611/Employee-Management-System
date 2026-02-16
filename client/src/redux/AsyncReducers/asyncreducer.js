@@ -96,6 +96,14 @@ export const HRAsyncReducer = (builder, thunk) => {
                 state.error.status = false;
                 state.data = action.payload;
             }
+            if (action.payload.type == "HRLogout") {
+                state.isLoading = false;
+                state.isAuthenticated = false
+                state.isAuthourized = false
+                state.isVerified = false
+                state.error.status = false;
+                state.data = action.payload;
+            }
         })
         .addCase(thunk.rejected, (state, action) => {
             if (action.payload.type == "signup") {

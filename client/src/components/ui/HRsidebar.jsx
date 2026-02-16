@@ -7,7 +7,9 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { HandlePostHumanResources } from "../../redux/Thunks/HRThunk"
 
 const menuItems = [
     { label: "Super Admin Dashboard", icon: "dashboard.png", to: "/HR/dashboard/dashboard-data" },
@@ -24,6 +26,14 @@ const menuItems = [
 ]
 
 export function HRdashboardSidebar() {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+
+    const HandleLogout = async () => {
+        await dispatch(HandlePostHumanResources({ apiroute: "LOGOUT", data: {} }))
+        navigate("/auth/HR/login")
+    }
+
     return (
         <Sidebar>
             <SidebarContent>
@@ -38,6 +48,10 @@ export function HRdashboardSidebar() {
                                     </SidebarMenuItem>
                                 </NavLink>
                             ))}
+                            <SidebarMenuItem className="flex gap-4 hover:bg-red-100 rounded-lg cursor-pointer" onClick={HandleLogout}>
+                                <img src="/../../src/assets/HR-Dashboard/settings.png" alt="" className="w-7 ms-2 my-1" />
+                                <button className="text-[16px] text-red-600">Logout</button>
+                            </SidebarMenuItem>
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>

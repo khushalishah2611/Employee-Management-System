@@ -10,6 +10,7 @@ import { HRDashboardPage } from '../pages/HumanResources/Dashboard Childs/dashbo
 import { HRProtectedRoutes } from './HRprotectedroutes.jsx'
 import { HREmployeesPage } from '../pages/HumanResources/Dashboard Childs/employeespage.jsx'
 import { HRDepartmentPage } from '../pages/HumanResources/Dashboard Childs/departmentpage.jsx'
+import { HRModulePage } from '../pages/HumanResources/Dashboard Childs/modulepage.jsx'
 
 export const HRRoutes = [
   {
@@ -42,7 +43,7 @@ export const HRRoutes = [
       },
       {
         path: '/HR/dashboard/salaries',
-        element: <HRDashboardPage />,
+        element: <HRModulePage title="Salary Module" description="Manage salary structures, monthly payouts, and payslip related data here." />,
       },
       {
         path: '/HR/dashboard/notices',
@@ -50,11 +51,11 @@ export const HRRoutes = [
       },
       {
         path: '/HR/dashboard/leaves',
-        element: <HRDashboardPage />,
+        element: <HRModulePage title="Leave Module" description="Track leave requests, approvals, and balances from this section." />,
       },
       {
         path: '/HR/dashboard/attendances',
-        element: <HRDashboardPage />,
+        element: <HRModulePage title="Attendance Module" description="Review and manage employee attendance records and statuses." />,
       },
       {
         path: '/HR/dashboard/recruitment',

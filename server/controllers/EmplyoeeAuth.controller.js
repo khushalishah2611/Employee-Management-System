@@ -144,13 +144,6 @@ export const HandleEmplyoeeLogin = async (req, res) => {
 
     GenerateJwtTokenAndSetCookiesEmployee(res, employee.id, employee.role, employee.organizationID)
 
-    await prisma.employeeProfile.update({
-      where: { id: employee.id },
-      data: {
-        lastlogin: new Date(),
-      },
-    })
-
     return res.status(200).json({ success: true, message: 'Emplyoee Login Successfull' })
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message })

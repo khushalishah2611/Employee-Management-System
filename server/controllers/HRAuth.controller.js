@@ -165,9 +165,9 @@ export const HandleHRLogin = async (req, res) => {
 export const HandleHRLogout = async (req, res) => {
   try {
     res.clearCookie('HRtoken')
-    return res.status(200).json({ success: true, message: 'HR Logged Out Successfully' })
+    return res.status(200).json({ success: true, message: 'HR Logged Out Successfully', type: 'HRLogout' })
   } catch (error) {
-    return res.status(500).json({ success: false, message: 'Internal server Error', error })
+    return res.status(500).json({ success: false, message: 'Internal server Error', error, type: 'HRLogout' })
   }
 }
 
