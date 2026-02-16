@@ -24,6 +24,7 @@ export const HREmployeesPageEndPoints = {
     GETALL: "/api/v1/employee/all",
     ADDEMPLOYEE: "/api/auth/employee/signup",
     GETONE: (EMID) => `/api/v1/employee/by-HR/${EMID}`,
+    UPDATE: "/api/v1/employee/update-employee",
     DELETE: (EMID) => `/api/v1/employee/delete-employee/${EMID}`
 }
 

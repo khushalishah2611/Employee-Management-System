@@ -1,5 +1,6 @@
 import { EmployeeDetailsDialogBox } from "./dialogboxes.jsx"
 import { DeleteEmployeeDialogBox } from "./dialogboxes.jsx"
+import { EditEmployeeDialogBox } from "./dialogboxes.jsx"
 import { RemoveEmployeeFromDepartmentDialogBox } from "./dialogboxes.jsx"
 
 export const ListWrapper = ({ children }) => {
@@ -34,7 +35,7 @@ export const ListContainer = ({ children }) => {
 export const ListItems = ({ TargetedState }) => {
     return (
         <>
-            {TargetedState.data ? TargetedState.data.map((item) => <div className={`list-item-container grid min-[250px]:grid-cols-2 sm:grid-cols-5 py-1 gap-2 justify-center items-center border-b-2 border-blue-800`}>
+            {TargetedState.data ? TargetedState.data.map((item) => <div key={item.id} className={`list-item-container grid min-[250px]:grid-cols-2 sm:grid-cols-5 py-1 gap-2 justify-center items-center border-b-2 border-blue-800`}>
                 <div className="heading-content font-bold min-[250px]:text-sm sm:text-xs lg:text-sm xl:text-lg p-2 rounded-lg text-start overflow-hidden text-ellipsis">
                     {`${item.firstname} ${item.lastname}`}
                 </div>
@@ -49,8 +50,9 @@ export const ListItems = ({ TargetedState }) => {
                 </div>
                 <div className="heading-content text-blue-800 font-bold min-[250px]:text-xs xl:text-lg p-2 rounded-lg text-center flex justify-center items-center min-[250px]:gap-1 xl:gap-2">
                     {/* <button className="btn-sm btn-blue-700 text-md border-2 border-blue-800 px-2 py-1 rounded-md hover:bg-blue-800 hover:text-white">View</button> */}
-                    <EmployeeDetailsDialogBox EmployeeID={item._id} />
-                    <DeleteEmployeeDialogBox EmployeeID={item._id} />
+                    <EmployeeDetailsDialogBox EmployeeID={item.id} />
+                    <EditEmployeeDialogBox EmployeeData={item} />
+                    <DeleteEmployeeDialogBox EmployeeID={item.id} />
                 </div>
             </div>) : null}
         </>
@@ -62,7 +64,7 @@ export const DepartmentListItems = ({ TargetedState }) => {
     console.log("this is targeted state", TargetedState)
     return (
         <>
-            {Array.isArray(TargetedState?.employees) ? TargetedState.employees.map((item) => <div className={`list-item-container grid min-[250px]:grid-cols-2 sm:grid-cols-4 py-1 gap-2 justify-center items-center border-b-2 border-blue-800`}>
+            {Array.isArray(TargetedState?.employees) ? TargetedState.employees.map((item) => <div key={item.id} className={`list-item-container grid min-[250px]:grid-cols-2 sm:grid-cols-4 py-1 gap-2 justify-center items-center border-b-2 border-blue-800`}>
                 <div className="heading-content font-bold min-[250px]:text-sm sm:text-xs lg:text-sm xl:text-lg p-2 rounded-lg text-center overflow-hidden text-ellipsis">
                     {`${item.firstname} ${item.lastname}`}
                 </div>
@@ -73,7 +75,7 @@ export const DepartmentListItems = ({ TargetedState }) => {
                     {item.contactnumber}
                 </div>
                 <div className="heading-content text-blue-800 font-bold min-[250px]:text-xs xl:text-lg p-2 rounded-lg text-center flex justify-center items-center min-[250px]:gap-1 xl:gap-2">
-                    <RemoveEmployeeFromDepartmentDialogBox DepartmentName={TargetedState.name} DepartmentID={TargetedState._id} EmployeeID={item._id}/>
+                    <RemoveEmployeeFromDepartmentDialogBox DepartmentName={TargetedState.name} DepartmentID={TargetedState.id} EmployeeID={item.id}/>
                 </div>
             </div>) : null}
         </>

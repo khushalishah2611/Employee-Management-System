@@ -108,6 +108,7 @@ export const HandleEmployeeUpdate = async (req, res) => {
         email: updatedEmployee?.email,
         contactnumber: updatedEmployee?.contactnumber,
         departmentID: updatedEmployee?.department || updatedEmployee?.departmentID || undefined,
+        isverified: typeof updatedEmployee?.isverified === 'boolean' ? updatedEmployee.isverified : undefined,
       },
       select: {
         id: true,
@@ -119,7 +120,7 @@ export const HandleEmployeeUpdate = async (req, res) => {
       },
     })
 
-    return res.status(200).json({ success: true, data: employee })
+    return res.status(200).json({ success: true, data: employee, type: 'EmployeeUpdate', message: 'Employee updated successfully' })
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message, message: 'internal server error' })
   }

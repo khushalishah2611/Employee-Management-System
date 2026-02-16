@@ -188,7 +188,7 @@ export const HandleDeleteDepartment = async (req, res) => {
 
       await prisma.department.delete({ where: { id: departmentID } })
 
-      return res.status(200).json({ success: true, message: 'Department deleted successfully' })
+      return res.status(200).json({ success: true, message: 'Department deleted successfully', type: 'DepartmentDelete' })
     }
 
     if (action === 'delete-employee') {

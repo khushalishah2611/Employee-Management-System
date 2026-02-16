@@ -40,6 +40,38 @@ export const HRRoutes = [
         path: '/HR/dashboard/departments',
         element: <HRDepartmentPage />,
       },
+      {
+        path: '/HR/dashboard/salaries',
+        element: <HRDashboardPage />,
+      },
+      {
+        path: '/HR/dashboard/notices',
+        element: <HRDashboardPage />,
+      },
+      {
+        path: '/HR/dashboard/leaves',
+        element: <HRDashboardPage />,
+      },
+      {
+        path: '/HR/dashboard/attendances',
+        element: <HRDashboardPage />,
+      },
+      {
+        path: '/HR/dashboard/recruitment',
+        element: <HRDashboardPage />,
+      },
+      {
+        path: '/HR/dashboard/interview-insights',
+        element: <HRDashboardPage />,
+      },
+      {
+        path: '/HR/dashboard/requests',
+        element: <HRDashboardPage />,
+      },
+      {
+        path: '/HR/dashboard/hr-profiles',
+        element: <HRDashboardPage />,
+      },
     ],
   },
   {

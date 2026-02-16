@@ -12,7 +12,7 @@ router.get("/all", VerifyhHRToken, RoleAuthorization(...ADMIN_ROLES), HandleAllE
 
 router.get("/all-employees-ids", VerifyhHRToken, RoleAuthorization(...ADMIN_ROLES), HandleAllEmployeesIDS)
 
-router.patch("/update-employee", VerifyEmployeeToken, HandleEmployeeUpdate)
+router.patch("/update-employee", VerifyhHRToken, RoleAuthorization(...ADMIN_ROLES), HandleEmployeeUpdate)
 
 router.delete("/delete-employee/:employeeId", VerifyhHRToken, RoleAuthorization(...ADMIN_ROLES), HandleEmployeeDelete)
 

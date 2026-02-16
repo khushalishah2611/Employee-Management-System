@@ -28,6 +28,21 @@ export const HandlePostHREmployees = createAsyncThunk('HandlePostHREmploy', asyn
     }
 })
 
+
+export const HandlePatchHREmployees = createAsyncThunk('HandlePatchHREmployees', async (HREmployeeData, { rejectWithValue }) => {
+    try {
+        const { apiroute, data } = HREmployeeData
+        const response = await apiService.patch(`${HREmployeesPageEndPoints[apiroute]}`, data, {
+            withCredentials: true
+        })
+        return response.data
+    }
+
+    catch (error) {
+        return rejectWithValue(error.response.data);
+    }
+})
+
 export const HandleDeleteHREmployees = createAsyncThunk("HandleDeleteHREmployees", async (HREmployeeData, { rejectWithValue }) => {
     try {
         const { apiroute } = HREmployeeData

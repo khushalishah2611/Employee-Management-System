@@ -14,8 +14,8 @@ import { CommonStateHandler } from "../../../utils/commonhandler.js"
 import { useDispatch, useSelector } from "react-redux"
 import { FormSubmitToast } from "./Toasts.jsx"
 import { Loading } from "../loading.jsx"
-import { HandleDeleteHREmployees } from "../../../redux/Thunks/HREmployeesThunk.js"
-import { HandlePostHRDepartments, HandlePatchHRDepartments, HandleDeleteHRDepartments } from "../../../redux/Thunks/HRDepartmentPageThunk.js"
+import { HandleDeleteHREmployees, HandlePatchHREmployees } from "../../../redux/Thunks/HREmployeesThunk.js"
+import { HandleGetHRDepartments, HandlePostHRDepartments, HandlePatchHRDepartments, HandleDeleteHRDepartments } from "../../../redux/Thunks/HRDepartmentPageThunk.js"
 import { useToast } from "../../../hooks/use-toast.js"
 import {
     Command,
@@ -124,7 +124,7 @@ export const EmployeeDetailsDialogBox = ({ EmployeeID }) => {
     const HREmployeesState = useSelector((state) => state.HREmployeesPageReducer)
     const FetchEmployeeData = (EmID) => {
         const employee = Array.isArray(HREmployeesState.data)
-            ? HREmployeesState.data.find((item) => item._id === EmID)
+            ? HREmployeesState.data.find((item) => item.id === EmID)
             : null
         return employee
     }
@@ -204,6 +204,109 @@ export const EmployeeDetailsDialogBox = ({ EmployeeID }) => {
         </div>
     )
 }
+
+
+export const EditEmployeeDialogBox = ({ EmployeeData }) => {
+    const dispatch = useDispatch()
+    const HRDepartmentState = useSelector((state) => state.HRDepartmentPageReducer)
+    const [formdata, setformdata] = useState({
+        firstname: EmployeeData?.firstname || "",
+        lastname: EmployeeData?.lastname || "",
+        email: EmployeeData?.email || "",
+        contactnumber: EmployeeData?.contactnumber || "",
+        departmentID: EmployeeData?.department?.id || "",
+        isverified: Boolean(EmployeeData?.isverified),
+    })
+
+    useEffect(() => {
+        dispatch(HandleGetHRDepartments({ apiroute: "GETALL" }))
+    }, [])
+
+    useEffect(() => {
+        setformdata({
+            firstname: EmployeeData?.firstname || "",
+            lastname: EmployeeData?.lastname || "",
+            email: EmployeeData?.email || "",
+            contactnumber: EmployeeData?.contactnumber || "",
+            departmentID: EmployeeData?.department?.id || "",
+            isverified: Boolean(EmployeeData?.isverified),
+        })
+    }, [EmployeeData])
+
+    const handleEditEmployee = () => {
+        dispatch(HandlePatchHREmployees({
+            apiroute: "UPDATE",
+            data: {
+                employeeId: EmployeeData.id,
+                updatedEmployee: {
+                    firstname: formdata.firstname,
+                    lastname: formdata.lastname,
+                    email: formdata.email,
+                    contactnumber: formdata.contactnumber,
+                    departmentID: formdata.departmentID || null,
+                    isverified: formdata.isverified,
+                },
+            },
+        }))
+    }
+
+    const verifyEmployeeEmail = () => {
+        setformdata((prev) => ({ ...prev, isverified: true }))
+        dispatch(HandlePatchHREmployees({
+            apiroute: "UPDATE",
+            data: { employeeId: EmployeeData.id, updatedEmployee: { isverified: true } },
+        }))
+    }
+
+    return (
+        <div className="edit-employee-dialog-container">
+            <Dialog>
+                <DialogTrigger className="btn-sm btn-blue-700 text-md border-2 border-blue-800 min-[250px]:px-2 min-[250px]:py-1 sm:px-1 sm:py-0.5 xl:px-2 xl:py-1 rounded-md hover:bg-blue-800 hover:text-white">Edit</DialogTrigger>
+                <DialogContent className="max-w-[315px] sm:max-w-[50vw] 2xl:max-w-[45vw]">
+                    <div className="flex flex-col gap-4">
+                        <h1 className="font-bold text-2xl">Edit Employee</h1>
+                        <div className="grid md:grid-cols-2 min-[250px]:grid-cols-1 gap-3">
+                            <div className="flex flex-col gap-1">
+                                <label htmlFor={`edit-firstname-${EmployeeData.id}`} className="font-bold">First Name</label>
+                                <input id={`edit-firstname-${EmployeeData.id}`} className="border-2 border-gray-700 rounded px-2 py-1" value={formdata.firstname} onChange={(e) => setformdata({ ...formdata, firstname: e.target.value })} />
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <label htmlFor={`edit-lastname-${EmployeeData.id}`} className="font-bold">Last Name</label>
+                                <input id={`edit-lastname-${EmployeeData.id}`} className="border-2 border-gray-700 rounded px-2 py-1" value={formdata.lastname} onChange={(e) => setformdata({ ...formdata, lastname: e.target.value })} />
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <label htmlFor={`edit-email-${EmployeeData.id}`} className="font-bold">Email</label>
+                                <input id={`edit-email-${EmployeeData.id}`} type="email" className="border-2 border-gray-700 rounded px-2 py-1" value={formdata.email} onChange={(e) => setformdata({ ...formdata, email: e.target.value })} />
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <label htmlFor={`edit-contact-${EmployeeData.id}`} className="font-bold">Contact Number</label>
+                                <input id={`edit-contact-${EmployeeData.id}`} className="border-2 border-gray-700 rounded px-2 py-1" value={formdata.contactnumber} onChange={(e) => setformdata({ ...formdata, contactnumber: e.target.value })} />
+                            </div>
+                            <div className="flex flex-col gap-1 md:col-span-2">
+                                <label htmlFor={`edit-dept-${EmployeeData.id}`} className="font-bold">Department</label>
+                                <select id={`edit-dept-${EmployeeData.id}`} className="border-2 border-gray-700 rounded px-2 py-1" value={formdata.departmentID} onChange={(e) => setformdata({ ...formdata, departmentID: e.target.value })}>
+                                    <option value="">Not Specified</option>
+                                    {Array.isArray(HRDepartmentState.data) ? HRDepartmentState.data.map((department) => (
+                                        <option key={department.id} value={department.id}>{department.name}</option>
+                                    )) : null}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="flex justify-between items-center gap-2">
+                            <Button className="bg-green-700 hover:bg-green-900" onClick={verifyEmployeeEmail} disabled={formdata.isverified}>
+                                {formdata.isverified ? "Email Verified" : "Verify Email"}
+                            </Button>
+                            <DialogClose asChild>
+                                <Button className="bg-blue-700 hover:bg-blue-900" onClick={handleEditEmployee}>Save</Button>
+                            </DialogClose>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        </div>
+    )
+}
+
 
 
 export const DeleteEmployeeDialogBox = ({ EmployeeID }) => {
@@ -325,7 +428,7 @@ export const EmployeesIDSDialogBox = ({ DepartmentID }) => {
             Set_selectedEmployeesData({ ...SelectedEmployeesData, employeeIDArray: SelectedEmployeesData.employeeIDArray.filter((item) => item !== EMID) })
         }
         else if (!SelectedEmployeesData.employeeIDArray.includes(EMID)) {
-            Set_selectedEmployeesData({ ...SelectedEmployeesData }, SelectedEmployeesData.employeeIDArray.push(EMID))
+            Set_selectedEmployeesData({ ...SelectedEmployeesData, employeeIDArray: [...SelectedEmployeesData.employeeIDArray, EMID] })
         }
     }
 
@@ -369,7 +472,7 @@ export const EmployeesIDSDialogBox = ({ DepartmentID }) => {
                                     <CommandGroup heading="All Employees">
                                         {EmployeesIDState.data ? EmployeesIDState.data.map((item, index) => <CommandItem key={index}>
                                             <div className="employeeID-checkbox flex justify-center items-center gap-2">
-                                                <input type="checkbox" id={`EmployeeID-${index + 1}`} className="border-2 border-gray-700 w-4 h-4" onClick={() => SelectEmployees(item._id)} checked={SelectedEmployeesData.employeeIDArray.includes(item._id)} disabled={item.department ? true : false} />
+                                                <input type="checkbox" id={`EmployeeID-${index + 1}`} className="border-2 border-gray-700 w-4 h-4" onClick={() => SelectEmployees(item.id)} checked={SelectedEmployeesData.employeeIDArray.includes(item.id)} disabled={item.department ? true : false} />
                                                 <label htmlFor={`EmployeeID-${index + 1}`} className="text-lg">{`${item.firstname} ${item.lastname}`} <span className="text-xs mx-0.5 overflow-hidden text-ellipsis">{item.department ? `(${item.department.name})` : null}</span> </label>
                                             </div>
                                         </CommandItem>) : null}

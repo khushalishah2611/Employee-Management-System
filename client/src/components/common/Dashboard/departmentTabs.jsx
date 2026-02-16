@@ -1,15 +1,5 @@
 import { Button } from "@/components/ui/button"
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
     Tabs,
     TabsContent,
     TabsList,
@@ -35,13 +25,16 @@ import { useState, useEffect } from "react"
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 import { useSelector, useDispatch } from "react-redux"
-import { HandleGetHRDepartments } from "../../../redux/Thunks/HRDepartmentPageThunk"
+import { HandleDeleteHRDepartments, HandleGetHRDepartments, HandlePatchHRDepartments } from "../../../redux/Thunks/HRDepartmentPageThunk"
 import { Loading } from "../loading.jsx"
 import { HeadingBar } from "./ListDesigns.jsx"
 import { DepartmentListItems } from "./ListDesigns.jsx"
@@ -67,6 +60,10 @@ export const HRDepartmentTabs = () => {
         }
     }
 
+    const selectedDepartment = HRDepartmentState.data
+        ? HRDepartmentState.data.find((item) => item.name === department)
+        : null
+
     useEffect(() => {
         if (HRDepartmentState.fetchData) {
             dispatch(HandleGetHRDepartments({ apiroute: "GETALL" }))
@@ -90,8 +87,6 @@ export const HRDepartmentTabs = () => {
             })
         }
 
-        console.log("test message")
-
     }, [HRDepartmentState.fetchData, HRDepartmentState.error, HRDepartmentState.success])
 
 
@@ -114,7 +109,7 @@ export const HRDepartmentTabs = () => {
                     <ComboDropDown DepartmentData={departments} CurrentDepartment={department} SetCurrentDepartment={setdepartment} />
                 </div>
                 <div className="update-delete-department">
-                    {department !== "All Departments" ?
+                    {department !== "All Departments" && selectedDepartment ?
                         <DropdownMenu>
                             <DropdownMenuTrigger>
                                 <Button className="bg-blue-700 hover:bg-blue-900">
@@ -122,16 +117,9 @@ export const HRDepartmentTabs = () => {
                                     <span className="min-[250px]:hidden sm:flex">Settings</span></Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="flex flex-col justify-center items-center p-2">
-                                {/* <DropdownMenuLabel>Update or Delete The Department</DropdownMenuLabel> */}
                                 <div className="buttons flex flex-col gap-2">
-                                    <Button className="bg-blue-700 text-white font-bold text-sm hover:bg-blue-900">
-                                        <img src="../../src/assets/HR-Dashboard/update.png" alt="" className="w-5" />
-                                        Update
-                                    </Button>
-                                    <Button className="bg-red-700 text-white font-bold text-sm hover:bg-red-900">
-                                        <img src="../../src/assets/HR-Dashboard/delete.png" alt="" className="w-5" />
-                                        Delete
-                                    </Button>
+                                    <EditDepartmentDialog Department={selectedDepartment} />
+                                    <DeleteDepartmentDialog Department={selectedDepartment} SetCurrentDepartment={setdepartment} />
                                 </div>
                             </DropdownMenuContent>
                         </DropdownMenu> : null}
@@ -140,7 +128,7 @@ export const HRDepartmentTabs = () => {
             <div className={`department-container min-[250px]:px-1 sm:px-4 rounded-lg flex flex-col gap-4 h-[100%]`}>
                 {
                     department === "All Departments" ? <AllDepartments DepartmentData={HRDepartmentState} SetCurrentDepartment={setdepartment} /> :
-                        <DepartmentContent CurrentDepartmentData={HRDepartmentState.data ? HRDepartmentState.data.find((item) => item.name == department) : null} />
+                        <DepartmentContent CurrentDepartmentData={selectedDepartment} />
                 }
             </div>
         </div>
@@ -150,13 +138,12 @@ export const HRDepartmentTabs = () => {
 
 
 export const ComboDropDown = ({ DepartmentData, CurrentDepartment, SetCurrentDepartment }) => {
-
     const [open, setOpen] = useState(false)
 
     return (
-        <div className="departments-container">
+        <div className="combobox-content">
             <Popover open={open} onOpenChange={setOpen}>
-                <PopoverTrigger asChild className="border-2 border-blue-500 w-4">
+                <PopoverTrigger asChild>
                     <Button
                         variant="outline"
                         role="combobox"
@@ -178,7 +165,6 @@ export const ComboDropDown = ({ DepartmentData, CurrentDepartment, SetCurrentDep
                                         key={department.value}
                                         value={department.value}
                                         onSelect={(currentValue) => {
-                                            console.log("this is the current value", currentValue)
                                             SetCurrentDepartment(currentValue === CurrentDepartment ? "All Departments" : currentValue)
                                             setOpen(false)
                                         }}
@@ -228,7 +214,7 @@ export const DepartmentContent = ({ CurrentDepartmentData }) => {
                         </TabsTrigger>
                     </TabsList>
                     <div className="edd-employees-dialog-box">
-                        <EmployeesIDSDialogBox DepartmentID={departmentInfo._id} />
+                        <EmployeesIDSDialogBox DepartmentID={departmentInfo.id} />
                     </div>
                 </div>
                 <TabsContent value="account" className={`border-2 border-blue-500 rounded-lg min-[250px]:h-[100%] md:h-[85%] min-[1650px]:h-[90%] overflow-auto p-2`}>
@@ -247,7 +233,7 @@ export const DepartmentContent = ({ CurrentDepartmentData }) => {
 export const AllDepartments = ({ DepartmentData, SetCurrentDepartment }) => {
     return (
         <>
-            {DepartmentData.data ? DepartmentData.data.map((department) => <div key={department.name} className="department-data border-2 border-blue-700 p-4 rounded-lg flex flex-col gap-4">
+            {DepartmentData.data ? DepartmentData.data.map((department) => <div key={department.id} className="department-data border-2 border-blue-700 p-4 rounded-lg flex flex-col gap-4">
                 <div className="department-heading-description flex justify-between items-center min-[250px]:items-center sm:items-start">
                     <h1 className="font-bold min-[250px]:text-xl sm:text-2xl lg:text-4xl">{department.name}</h1>
                     <Button className="bg-blue-700 border-2 border-blue-700 text-white font-bold hover:bg-white hover:text-blue-700" onClick={() => SetCurrentDepartment(department.name)}>View</Button>
@@ -257,5 +243,101 @@ export const AllDepartments = ({ DepartmentData, SetCurrentDepartment }) => {
                 </p>
             </div>) : null}
         </>
+    )
+}
+
+
+const EditDepartmentDialog = ({ Department }) => {
+    const dispatch = useDispatch()
+    const [formdata, setformdata] = useState({
+        name: Department.name,
+        description: Department.description || "",
+    })
+
+    useEffect(() => {
+        setformdata({
+            name: Department.name,
+            description: Department.description || "",
+        })
+    }, [Department])
+
+    const updateDepartment = () => {
+        dispatch(HandlePatchHRDepartments({
+            apiroute: "UPDATE",
+            data: {
+                departmentID: Department.id,
+                UpdatedDepartment: formdata,
+            },
+        }))
+    }
+
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button className="bg-blue-700 text-white font-bold text-sm hover:bg-blue-900">
+                    <img src="../../src/assets/HR-Dashboard/update.png" alt="" className="w-5" />
+                    Update
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-[315px] lg:max-w-[35vw] 2xl:max-w-[30vw]">
+                <div className="flex flex-col gap-3">
+                    <h2 className="text-xl font-bold">Edit Department</h2>
+                    <input
+                        className="border-2 border-gray-700 rounded px-2 py-1"
+                        value={formdata.name}
+                        onChange={(e) => setformdata({ ...formdata, name: e.target.value })}
+                        placeholder="Department Name"
+                    />
+                    <textarea
+                        className="border-2 border-gray-700 rounded px-2 py-1 h-[100px]"
+                        value={formdata.description}
+                        onChange={(e) => setformdata({ ...formdata, description: e.target.value })}
+                        placeholder="Department Description"
+                    />
+                    <DialogClose asChild>
+                        <Button className="bg-blue-700 hover:bg-blue-900" onClick={updateDepartment}>Save</Button>
+                    </DialogClose>
+                </div>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+const DeleteDepartmentDialog = ({ Department, SetCurrentDepartment }) => {
+    const dispatch = useDispatch()
+
+    const deleteDepartment = () => {
+        dispatch(HandleDeleteHRDepartments({
+            apiroute: "DELETE",
+            data: {
+                departmentID: Department.id,
+                action: "delete-department",
+            },
+        }))
+        SetCurrentDepartment("All Departments")
+    }
+
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button className="bg-red-700 text-white font-bold text-sm hover:bg-red-900">
+                    <img src="../../src/assets/HR-Dashboard/delete.png" alt="" className="w-5" />
+                    Delete
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-[315px] lg:max-w-[35vw] 2xl:max-w-[30vw]">
+                <div className="flex flex-col justify-center items-center gap-4">
+                    <p className="text-lg font-bold min-[250px]:text-center">Are you sure you want to delete {Department.name} department?</p>
+                    <div className="flex gap-2">
+                        <DialogClose asChild>
+                            <Button className="bg-red-700 border-red-700 hover:bg-transparent hover:text-red-700" onClick={deleteDepartment}>Delete</Button>
+                        </DialogClose>
+                        <DialogClose asChild>
+                            <Button className="bg-green-700 border-green-700 hover:bg-transparent hover:text-green-700">Cancel</Button>
+                        </DialogClose>
+                    </div>
+                </div>
+            </DialogContent>
+        </Dialog>
     )
 }
