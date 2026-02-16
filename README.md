@@ -263,3 +263,24 @@ Email: darshjogi001@gmail.com
 LinkedIn: [Darsh Jogi](https://www.linkedin.com/in/darsh-jogi-info/).
 
 Thank you for visiting the Employees Management System (EMS) project! We hope it provides valuable insights into how technology can simplify employee management.
+
+### Prisma + MySQL troubleshooting (important)
+
+If your MySQL password contains special characters like `@`, `#`, `%`, `:` etc., URL-encode them in `DATABASE_URL`.
+
+Example:
+
+```env
+# raw password: Bhavesh@123
+DATABASE_URL="mysql://root:Bhavesh%40123@localhost:3306/hrm_db"
+```
+
+Also make sure you run Prisma commands from the `server` folder using the project scripts (so the repo's Prisma version is used):
+
+```bash
+cd server
+npm run prisma:generate
+npm run prisma:migrate
+```
+
+If you installed Prisma CLI globally and see schema errors from Prisma 7 with this codebase, remove the global CLI or run only local scripts from `server/package.json`.
