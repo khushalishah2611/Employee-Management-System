@@ -1,16 +1,17 @@
 import { PrismaClient } from "@prisma/client";
-import mariadb from "mariadb";
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 
 const globalForPrisma = globalThis;
 
-export const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    adapter: new PrismaMariaDb(
-      mariadb.createPool({ uri: process.env.DATABASE_URL })
-    ),
-  });
+const normalizedDatabaseUrl = process.env.DATABASE_URL?.replace(
+  /^mariadb:\/\//,
+  "mysql://"
+);
+
+if (normalizedDatabaseUrl) {
+  process.env.DATABASE_URL = normalizedDatabaseUrl;
+}
+
+export const prisma = globalForPrisma.prisma || new PrismaClient();
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
