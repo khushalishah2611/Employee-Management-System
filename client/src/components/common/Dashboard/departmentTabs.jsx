@@ -206,6 +206,18 @@ export const DepartmentContent = ({ CurrentDepartmentData }) => {
     const table_headings_employees = ["Full Name", "Email", "Contact Number", "Remove Employee"]
     const table_headings_notice = ["Title", "Audience", "Createdby", "View Notice"]
 
+    if (!CurrentDepartmentData) {
+        return (
+            <div className="department-heading-description flex flex-col gap-2">
+                <h1 className="font-bold text-xl sm:text-2xl lg:text-3xl">Department not found</h1>
+                <p className="font-bold text-sm sm:text-base">Please select a valid department from the dropdown.</p>
+            </div>
+        )
+    }
+
+    const employeesCount = CurrentDepartmentData.employees?.length || 0
+    const noticeCount = CurrentDepartmentData.notice?.length || 0
+
     return (
         <>
             <div className="department-heading-description flex flex-col gap-4 min-[250px]:items-center sm:items-start">
@@ -218,10 +230,10 @@ export const DepartmentContent = ({ CurrentDepartmentData }) => {
                 <div className="tabs-with-button flex justify-between items-center min-[250px]:flex-col-reverse sm:flex-row">
                     <TabsList className="min-[250px]:max-w-[250px] md:max-w-[300px] bg-blue-200 text-blue-700 my-3 min-[250px]:flex min-[250px]:flex-col min-[250px]:py-14 min-[350px]:flex min-[350px]:flex-row min-[350px]:py-6">
                         <TabsTrigger value="account" className="px-4 py-2 font-bold m-2 min-[250px]:text-xs md:text-sm">
-                            <span className="text-blue-700">{CurrentDepartmentData.employees.length} Employees</span>
+                            <span className="text-blue-700">{employeesCount} Employees</span>
                         </TabsTrigger>
                         <TabsTrigger value="password" className="px-4 py-2 font-bold m-2 min-[250px]:text-xs md:text-sm">
-                            <span className="text-blue-700">{CurrentDepartmentData.notice.length} Notice</span>
+                            <span className="text-blue-700">{noticeCount} Notice</span>
                         </TabsTrigger>
                     </TabsList>
                     <div className="edd-employees-dialog-box">
