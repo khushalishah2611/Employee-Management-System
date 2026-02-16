@@ -29,8 +29,8 @@ const NoticeSchema = new Schema({
         ref: "HumanResources"
     },
     organizationID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Organization"
+        type: String,
+        required: true
     }
 },
     {

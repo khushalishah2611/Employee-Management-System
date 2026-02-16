@@ -45,8 +45,8 @@ const SalarySchema = new Schema({
         default: "Pending",
     },
     organizationID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Organization"
+        type: String,
+        required: true
     }
 }, { timestamps: true });
 

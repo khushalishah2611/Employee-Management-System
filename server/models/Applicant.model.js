@@ -35,8 +35,8 @@ const ApplicantSchema = new Schema({
         default: 'Not Specified'
     },
     organizationID : {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Organization"
+        type: String,
+        required: true
     }
 }, { timestamps: true })
 

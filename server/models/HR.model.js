@@ -60,8 +60,8 @@ const HumanResourcesSchema = new Schema({
         ref: "Department",
     },
     organizationID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Organization"
+        type: String,
+        required: true
     }
 }, {
     timestamps: true

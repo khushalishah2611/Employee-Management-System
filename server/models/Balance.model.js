@@ -27,8 +27,8 @@ const BalanceSchema = new Schema({
         default: new Date()
     },
     organizationID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Organization"
+        type: String,
+        required: true
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,

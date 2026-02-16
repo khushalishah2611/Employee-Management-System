@@ -27,8 +27,8 @@ const AttendanceSchema = new Schema({
         }
     ],
     organizationID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Organization"
+        type: String,
+        required: true
     }
 }, { timestamps: true });
 

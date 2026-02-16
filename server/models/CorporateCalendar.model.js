@@ -19,8 +19,8 @@ const CorporateCalendarSchema = new Schema({
         required: true
     },
     organizationID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Organization"
+        type: String,
+        required: true
     }
 }, { timestamps: true });
 
