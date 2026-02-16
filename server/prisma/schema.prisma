@@ -8,15 +8,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum RoleType {
+  SUPER_ADMIN
+  EMPLOYEE
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model Organization {
-  id               String           @id @default(cuid())
-  name             String           @unique
+  id               String              @id @default(cuid())
+  name             String              @unique
   description      String
-  OrganizationURL  String           @unique
-  OrganizationMail String           @unique
+  OrganizationURL  String              @unique
+  OrganizationMail String              @unique
   hrUsers          HumanResources[]
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
+  departments      Department[]
+  employees        EmployeeProfile[]
+  leaveTypes       LeaveType[]
+  leaveRequests    LeaveRequest[]
+  attendance       AttendanceRecord[]
+  salaries         SalaryRecord[]
+  settings         CompanySetting?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
 }
 
 model HumanResources {
@@ -26,7 +44,7 @@ model HumanResources {
   email                    String       @unique
   password                 String
   contactnumber            String
-  role                     String       @default("HR-Admin")
+  role                     String       @default("Super Admin")
   lastlogin                DateTime     @default(now())
   isverified               Boolean      @default(false)
   verificationtoken        String?
@@ -39,4 +57,132 @@ model HumanResources {
   updatedAt                DateTime     @updatedAt
 
   @@index([organizationID])
+}
+
+model Department {
+  id             String            @id @default(cuid())
+  name           String
+  description    String?
+  organizationID String
+  organization   Organization      @relation(fields: [organizationID], references: [id], onDelete: Cascade)
+  employees      EmployeeProfile[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@unique([organizationID, name])
+  @@index([organizationID])
+}
+
+model EmployeeProfile {
+  id                       String             @id @default(cuid())
+  employeeCode             String
+  firstname                String
+  lastname                 String
+  email                    String
+  password                 String
+  contactnumber            String
+  role                     RoleType           @default(EMPLOYEE)
+  isactive                 Boolean            @default(true)
+  isverified               Boolean            @default(false)
+  verificationtoken        String?
+  verificationtokenexpires DateTime?
+  resetpasswordtoken       String?
+  resetpasswordexpires     DateTime?
+  organizationID           String
+  organization             Organization       @relation(fields: [organizationID], references: [id], onDelete: Cascade)
+  departmentID             String?
+  department               Department?        @relation(fields: [departmentID], references: [id], onDelete: SetNull)
+  attendance               AttendanceRecord[]
+  leaves                   LeaveRequest[]
+  salaries                 SalaryRecord[]
+  createdAt                DateTime           @default(now())
+  updatedAt                DateTime           @updatedAt
+
+  @@unique([organizationID, employeeCode])
+  @@unique([organizationID, email])
+  @@index([organizationID, departmentID])
+}
+
+model LeaveType {
+  id             String         @id @default(cuid())
+  name           String
+  defaultDays    Int            @default(0)
+  organizationID String
+  organization   Organization   @relation(fields: [organizationID], references: [id], onDelete: Cascade)
+  leaves         LeaveRequest[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@unique([organizationID, name])
+  @@index([organizationID])
+}
+
+model LeaveRequest {
+  id             String          @id @default(cuid())
+  organizationID String
+  organization   Organization    @relation(fields: [organizationID], references: [id], onDelete: Cascade)
+  employeeID     String
+  employee       EmployeeProfile @relation(fields: [employeeID], references: [id], onDelete: Cascade)
+  leaveTypeID    String
+  leaveType      LeaveType       @relation(fields: [leaveTypeID], references: [id], onDelete: Restrict)
+  fromDate       DateTime
+  toDate         DateTime
+  reason         String?
+  status         LeaveStatus     @default(PENDING)
+  approvedBy     String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([organizationID, employeeID, status])
+}
+
+model AttendanceRecord {
+  id             String          @id @default(cuid())
+  organizationID String
+  organization   Organization    @relation(fields: [organizationID], references: [id], onDelete: Cascade)
+  employeeID     String
+  employee       EmployeeProfile @relation(fields: [employeeID], references: [id], onDelete: Cascade)
+  attendanceDate DateTime
+  checkInAt      DateTime?
+  checkOutAt     DateTime?
+  status         String
+  notes          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@unique([employeeID, attendanceDate])
+  @@index([organizationID, attendanceDate])
+}
+
+model SalaryRecord {
+  id             String          @id @default(cuid())
+  organizationID String
+  organization   Organization    @relation(fields: [organizationID], references: [id], onDelete: Cascade)
+  employeeID     String
+  employee       EmployeeProfile @relation(fields: [employeeID], references: [id], onDelete: Cascade)
+  month          Int
+  year           Int
+  basicPay       Float
+  allowances     Float           @default(0)
+  deductions     Float           @default(0)
+  netPay         Float
+  payslipUrl     String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@unique([employeeID, month, year])
+  @@index([organizationID, year, month])
+}
+
+model CompanySetting {
+  id                   String       @id @default(cuid())
+  organizationID       String       @unique
+  organization         Organization @relation(fields: [organizationID], references: [id], onDelete: Cascade)
+  workingHoursPerDay   Float        @default(8)
+  leaveRules           Json?
+  salaryRules          Json?
+  attendanceRules      Json?
+  allowEmployeeMarking Boolean      @default(true)
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
 }

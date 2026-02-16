@@ -28,7 +28,7 @@ export function HRdashboardSidebar() {
 
                                 <SidebarMenuItem className="flex gap-4 hover:bg-blue-200 rounded-lg">
                                     <img src="/../../src/assets/HR-Dashboard/dashboard.png" alt="" className="w-7 ms-2 my-1" />
-                                    <button className="text-[16px]">Dashboard</button>
+                                    <button className="text-[16px]">Super Admin Dashboard</button>
                                 </SidebarMenuItem>
 
                             </NavLink>

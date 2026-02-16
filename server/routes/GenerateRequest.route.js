@@ -3,21 +3,22 @@ import { HandleAllGenerateRequest, HandleCreateGenerateRequest, HandleDeleteRequ
 
 import { VerifyEmployeeToken, VerifyhHRToken } from '../middlewares/Auth.middleware.js'
 import { RoleAuthorization } from '../middlewares/RoleAuth.middleware.js'
+import { ADMIN_ROLES } from '../constants/roles.js'
 
 const router = express.Router()
 
 
 router.post("/create-request", VerifyEmployeeToken, HandleCreateGenerateRequest)
 
-router.get("/all", VerifyhHRToken, RoleAuthorization("HR-Admin"), HandleAllGenerateRequest)
+router.get("/all", VerifyhHRToken, RoleAuthorization(...ADMIN_ROLES), HandleAllGenerateRequest)
 
-router.get("/:requestID", VerifyhHRToken, RoleAuthorization("HR-Admin"), HandleGenerateRequest)
+router.get("/:requestID", VerifyhHRToken, RoleAuthorization(...ADMIN_ROLES), HandleGenerateRequest)
 
 router.patch("/update-request-content", VerifyEmployeeToken, HandleUpdateRequestByEmployee)
 
-router.patch("/update-request-status", VerifyhHRToken, RoleAuthorization("HR-Admin"), HandleUpdateRequestByHR)
+router.patch("/update-request-status", VerifyhHRToken, RoleAuthorization(...ADMIN_ROLES), HandleUpdateRequestByHR)
 
-router.delete("/delete-request/:requestID", VerifyhHRToken, RoleAuthorization("HR-Admin"), HandleDeleteRequest)
+router.delete("/delete-request/:requestID", VerifyhHRToken, RoleAuthorization(...ADMIN_ROLES), HandleDeleteRequest)
 
 export default router
 
