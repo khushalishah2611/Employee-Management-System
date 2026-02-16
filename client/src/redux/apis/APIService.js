@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const rawBaseURL = import.meta.env.VITE_EMPLOYEE_API;
-const fallbackBaseURL = 'http://localhost:5000';
+const fallbackBaseURL = 'http://localhost:3000';
 
 if (!rawBaseURL) {
   console.warn(`VITE_EMPLOYEE_API is not set. Falling back to ${fallbackBaseURL}`);
