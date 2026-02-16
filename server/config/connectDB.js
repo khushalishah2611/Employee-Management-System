@@ -1,4 +1,3 @@
-import mongoose from 'mongoose'
 import { prisma } from '../lib/prisma.js'
 
 export const ConnectDB = async () => {
@@ -9,11 +8,6 @@ export const ConnectDB = async () => {
 
     await prisma.$connect()
     console.log('MySQL connected through Prisma...')
-
-    if (process.env.MONGODB_URI) {
-      await mongoose.connect(process.env.MONGODB_URI)
-      console.log('MongoDB connected for legacy modules...')
-    }
   } catch (error) {
     console.error('Error connecting to database:', error.message)
     process.exit(1)
