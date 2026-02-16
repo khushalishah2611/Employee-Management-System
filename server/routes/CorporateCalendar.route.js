@@ -2,17 +2,18 @@ import express from 'express'
 import { HandleAllEvents, HandleCreateEvent, HandleDeleteEvent, HandleEvent, HandleUpdateEvent } from '../controllers/CorporateCalendar.controller.js'
 import { VerifyhHRToken } from "../middlewares/Auth.middleware.js"
 import { RoleAuthorization } from "../middlewares/RoleAuth.middleware.js"
+import { ADMIN_ROLES } from "../constants/roles.js"
 
 const router = express.Router()
 
-router.post("/create-event",  VerifyhHRToken, RoleAuthorization("HR-Admin"), HandleCreateEvent)
+router.post("/create-event",  VerifyhHRToken, RoleAuthorization(...ADMIN_ROLES), HandleCreateEvent)
 
-router.get("/all",  VerifyhHRToken, RoleAuthorization("HR-Admin"), HandleAllEvents)
+router.get("/all",  VerifyhHRToken, RoleAuthorization(...ADMIN_ROLES), HandleAllEvents)
 
-router.get("/:eventID",  VerifyhHRToken, RoleAuthorization("HR-Admin"), HandleEvent)
+router.get("/:eventID",  VerifyhHRToken, RoleAuthorization(...ADMIN_ROLES), HandleEvent)
 
-router.patch("/update-event",  VerifyhHRToken, RoleAuthorization("HR-Admin"), HandleUpdateEvent)
+router.patch("/update-event",  VerifyhHRToken, RoleAuthorization(...ADMIN_ROLES), HandleUpdateEvent)
 
-router.delete("/delete-event/:eventID",  VerifyhHRToken, RoleAuthorization("HR-Admin"), HandleDeleteEvent) 
+router.delete("/delete-event/:eventID",  VerifyhHRToken, RoleAuthorization(...ADMIN_ROLES), HandleDeleteEvent) 
 
 export default router

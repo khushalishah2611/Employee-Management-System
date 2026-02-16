@@ -42,7 +42,7 @@ export const HandleHRSignup = async (req, res) => {
           email,
           password: hashedpassword,
           contactnumber,
-          role: 'HR-Admin',
+          role: 'Super Admin',
           organizationID: organization.id,
           verificationtoken: verificationcode,
           verificationtokenexpires: verificationExpiry,
@@ -78,7 +78,7 @@ export const HandleHRSignup = async (req, res) => {
           email,
           password: hashedpassword,
           contactnumber,
-          role: 'HR-Admin',
+          role: 'Super Admin',
           organizationID: newOrganization.id,
           verificationtoken: verificationcode,
           verificationtokenexpires: verificationExpiry,
@@ -177,7 +177,7 @@ export const HandleHRCheck = async (req, res) => {
     if (!HR) {
       return res.status(404).json({ success: false, message: 'HR not found', type: 'checkHR' })
     }
-    return res.status(200).json({ success: true, message: 'HR Already Logged In', type: 'checkHR' })
+    return res.status(200).json({ success: true, message: 'HR Already Logged In', type: 'checkHR', role: HR.role, panel: 'Super Admin' })
   } catch (error) {
     return res.status(500).json({ success: false, error, message: 'internal error', type: 'checkHR' })
   }
