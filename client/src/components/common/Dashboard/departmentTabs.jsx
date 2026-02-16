@@ -58,7 +58,7 @@ export const HRDepartmentTabs = () => {
 
     const departments = []
 
-    if (HRDepartmentState.data) {
+    if (Array.isArray(HRDepartmentState.data)) {
         for (let index = 0; index < HRDepartmentState.data.length; index++) {
             departments.push({
                 value: HRDepartmentState.data[index].name,
@@ -205,32 +205,35 @@ export const ComboDropDown = ({ DepartmentData, CurrentDepartment, SetCurrentDep
 export const DepartmentContent = ({ CurrentDepartmentData }) => {
     const table_headings_employees = ["Full Name", "Email", "Contact Number", "Remove Employee"]
     const table_headings_notice = ["Title", "Audience", "Createdby", "View Notice"]
+    const departmentInfo = CurrentDepartmentData || {}
+    const employeeCount = Array.isArray(departmentInfo.employees) ? departmentInfo.employees.length : 0
+    const noticeCount = Array.isArray(departmentInfo.notice) ? departmentInfo.notice.length : 0
 
     return (
         <>
             <div className="department-heading-description flex flex-col gap-4 min-[250px]:items-center sm:items-start">
-                <h1 className="font-bold min-[250px]:text-xl sm:text-2xl lg:text-4xl">{CurrentDepartmentData.name}</h1>
+                <h1 className="font-bold min-[250px]:text-xl sm:text-2xl lg:text-4xl">{departmentInfo.name || "Department"}</h1>
                 <p className="font-bold min-[250px]:text-xs sm:text-sm lg:text-lg min-[250px]:text-center sm:text-start">
-                    {CurrentDepartmentData.description}
+                    {departmentInfo.description || "No description available"}
                 </p>
             </div>
             <Tabs defaultValue="account" className="w-full h-[100%]">
                 <div className="tabs-with-button flex justify-between items-center min-[250px]:flex-col-reverse sm:flex-row">
                     <TabsList className="min-[250px]:max-w-[250px] md:max-w-[300px] bg-blue-200 text-blue-700 my-3 min-[250px]:flex min-[250px]:flex-col min-[250px]:py-14 min-[350px]:flex min-[350px]:flex-row min-[350px]:py-6">
                         <TabsTrigger value="account" className="px-4 py-2 font-bold m-2 min-[250px]:text-xs md:text-sm">
-                            <span className="text-blue-700">{CurrentDepartmentData.employees.length} Employees</span>
+                            <span className="text-blue-700">{employeeCount} Employees</span>
                         </TabsTrigger>
                         <TabsTrigger value="password" className="px-4 py-2 font-bold m-2 min-[250px]:text-xs md:text-sm">
-                            <span className="text-blue-700">{CurrentDepartmentData.notice.length} Notice</span>
+                            <span className="text-blue-700">{noticeCount} Notice</span>
                         </TabsTrigger>
                     </TabsList>
                     <div className="edd-employees-dialog-box">
-                        <EmployeesIDSDialogBox DepartmentID={CurrentDepartmentData._id} />
+                        <EmployeesIDSDialogBox DepartmentID={departmentInfo._id} />
                     </div>
                 </div>
                 <TabsContent value="account" className={`border-2 border-blue-500 rounded-lg min-[250px]:h-[100%] md:h-[85%] min-[1650px]:h-[90%] overflow-auto p-2`}>
                     <HeadingBar table_layout={"grid-cols-4"} table_headings={table_headings_employees} />
-                    <DepartmentListItems TargetedState={CurrentDepartmentData} />
+                    <DepartmentListItems TargetedState={departmentInfo} />
                 </TabsContent>
                 <TabsContent value="password" className={`border-2 border-blue-500 rounded-lg min-[250px]:h-[100%] md:h-[85%] min-[1650px]:h-[90%] overflow-auto p-2`}>
                     <HeadingBar table_layout={"grid-cols-4"} table_headings={table_headings_notice} />

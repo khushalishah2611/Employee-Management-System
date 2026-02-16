@@ -123,10 +123,19 @@ export const AddEmployeesDialogBox = () => {
 export const EmployeeDetailsDialogBox = ({ EmployeeID }) => {
     const HREmployeesState = useSelector((state) => state.HREmployeesPageReducer)
     const FetchEmployeeData = (EmID) => {
-        const employee = HREmployeesState.data.find((item) => item._id === EmID)
+        const employee = Array.isArray(HREmployeesState.data)
+            ? HREmployeesState.data.find((item) => item._id === EmID)
+            : null
         return employee
     }
-    const employeeData = FetchEmployeeData(EmployeeID)
+    const employeeData = FetchEmployeeData(EmployeeID) || {}
+    const noticeCount = Array.isArray(employeeData.notice) ? employeeData.notice.length : 0
+    const salaryCount = Array.isArray(employeeData.salary) ? employeeData.salary.length : 0
+    const leaveRequestCount = Array.isArray(employeeData.leaverequest) ? employeeData.leaverequest.length : 0
+    const requestCount = Array.isArray(employeeData.generaterequest) ? employeeData.generaterequest.length : 0
+    const firstName = employeeData.firstname || ""
+    const lastName = employeeData.lastname || ""
+
     return (
         <div className="Employees-Details-container">
             <Dialog>
@@ -137,21 +146,21 @@ export const EmployeeDetailsDialogBox = ({ EmployeeID }) => {
                     <div className="employee-data-container flex flex-col gap-4">
                         <div className="employee-profile-logo flex items-center gap-3">
                             <div className="logo border-2 border-blue-800 rounded-[50%] flex justify-center items-center">
-                                <p className="font-bold text-2xl text-blue-700 p-2">{`${employeeData.firstname.slice(0, 1).toUpperCase()} ${employeeData.lastname.slice(0, 1).toUpperCase()}`}</p>
+                                <p className="font-bold text-2xl text-blue-700 p-2">{`${firstName.slice(0, 1).toUpperCase()} ${lastName.slice(0, 1).toUpperCase()}`}</p>
                             </div>
                             <div className="employee-fullname">
-                                <p className="font-bold text-2xl">{`${employeeData.firstname} ${employeeData.lastname}`}</p>
+                                <p className="font-bold text-2xl">{`${firstName} ${lastName}`}</p>
                             </div>
                         </div>
                         <div className="employees-all-details grid lg:grid-cols-2 min-[250px]:gap-2 lg:gap-10">
                             <div className="details-group-1 flex flex-col gap-3">
                                 <div className="label-value-pair flex items-center gap-2">
                                     <label className="font-bold md:text-sm xl:text-lg">First Name :</label>
-                                    <p className="md:text-sm xl:text-lg">{employeeData.firstname}</p>
+                                    <p className="md:text-sm xl:text-lg">{firstName}</p>
                                 </div>
                                 <div className="label-value-pair flex items-center gap-2">
                                     <label className="font-bold md:text-sm xl:text-lg">Last Name :</label>
-                                    <p className="md:text-sm xl:text-lg">{employeeData.lastname}</p>
+                                    <p className="md:text-sm xl:text-lg">{lastName}</p>
                                 </div>
                                 <div className="label-value-pair flex items-center gap-2">
                                     <label className="font-bold md:text-sm xl:text-lg">Email :</label>
@@ -169,19 +178,19 @@ export const EmployeeDetailsDialogBox = ({ EmployeeID }) => {
                             <div className="details-group-1 flex flex-col gap-3">
                                 <div className="label-value-pair flex items-center gap-2">
                                     <label className="font-bold md:text-sm xl:text-lg">Notices :</label>
-                                    <p className="md:text-sm xl:text-lg">{employeeData.notice.length}</p>
+                                    <p className="md:text-sm xl:text-lg">{noticeCount}</p>
                                 </div>
                                 <div className="label-value-pair flex items-center gap-2">
                                     <label className="font-bold md:text-sm xl:text-lg">Salary Records :</label>
-                                    <p className="md:text-sm xl:text-lg">{employeeData.salary.length}</p>
+                                    <p className="md:text-sm xl:text-lg">{salaryCount}</p>
                                 </div>
                                 <div className="label-value-pair flex items-center gap-2">
                                     <label className="font-bold md:text-sm xl:text-lg">Leave Requests :</label>
-                                    <p className="md:text-sm xl:text-lg">{employeeData.leaverequest.length}</p>
+                                    <p className="md:text-sm xl:text-lg">{leaveRequestCount}</p>
                                 </div>
                                 <div className="label-value-pair flex items-center gap-2">
                                     <label className="font-bold md:text-sm xl:text-lg">Requests :</label>
-                                    <p className="md:text-sm xl:text-lg">{employeeData.generaterequest.length}</p>
+                                    <p className="md:text-sm xl:text-lg">{requestCount}</p>
                                 </div>
                                 <div className="label-value-pair flex items-center gap-2">
                                     <label className="font-bold md:text-sm xl:text-lg">Email Verify :</label>

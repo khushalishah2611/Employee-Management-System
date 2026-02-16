@@ -62,7 +62,7 @@ export const DepartmentListItems = ({ TargetedState }) => {
     console.log("this is targeted state", TargetedState)
     return (
         <>
-            {TargetedState ? TargetedState.employees.map((item) => <div className={`list-item-container grid min-[250px]:grid-cols-2 sm:grid-cols-4 py-1 gap-2 justify-center items-center border-b-2 border-blue-800`}>
+            {Array.isArray(TargetedState?.employees) ? TargetedState.employees.map((item) => <div className={`list-item-container grid min-[250px]:grid-cols-2 sm:grid-cols-4 py-1 gap-2 justify-center items-center border-b-2 border-blue-800`}>
                 <div className="heading-content font-bold min-[250px]:text-sm sm:text-xs lg:text-sm xl:text-lg p-2 rounded-lg text-center overflow-hidden text-ellipsis">
                     {`${item.firstname} ${item.lastname}`}
                 </div>
