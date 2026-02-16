@@ -22,14 +22,16 @@ export const HRLogin = () => {
 
     const handlesigninsubmit = (e) => {
         e.preventDefault();
-        loadingbar.current.continuousStart();
+        loadingbar.current?.continuousStart();
         dispatch(HandlePostHumanResources({ apiroute: "LOGIN", data: signinform }))
 
     }
 
-    if (HRState.error.status) {
-        loadingbar.current.complete()
-    }
+    useEffect(() => {
+        if (HRState.error?.status) {
+            loadingbar.current?.complete()
+        }
+    }, [HRState.error])
 
     useEffect(() => {
         if (!HRState.isAuthenticated) {
@@ -37,10 +39,10 @@ export const HRLogin = () => {
         }
 
         if (HRState.isAuthenticated) {
-            loadingbar.current.complete()
+            loadingbar.current?.complete()
             navigate("/auth/HR/dashboard")
         }
-    }, [HRState.isAuthenticated])
+    }, [HRState.isAuthenticated, dispatch, navigate])
 
 
     return (
