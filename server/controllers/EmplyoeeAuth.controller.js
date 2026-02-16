@@ -144,7 +144,7 @@ export const HandleEmplyoeeLogin = async (req, res) => {
 
     GenerateJwtTokenAndSetCookiesEmployee(res, employee.id, employee.role, employee.organizationID)
 
-    return res.status(200).json({ success: true, message: 'Emplyoee Login Successfull' })
+    return res.status(200).json({ success: true, message: 'Emplyoee Login Successfull', role: employee.role, panel: 'Employee', organizationID: employee.organizationID })
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message })
   }
@@ -156,7 +156,7 @@ export const HandleEmployeeCheck = async (req, res) => {
     if (!employee) {
       return res.status(404).json({ success: false, message: 'Employee not found' })
     }
-    return res.status(200).json({ success: true, message: 'Employee Already Logged In', role: employee.role, panel: 'Employee' })
+    return res.status(200).json({ success: true, message: 'Employee Already Logged In', role: employee.role, panel: 'Employee', organizationID: employee.organizationID })
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message, message: 'internal error' })
   }

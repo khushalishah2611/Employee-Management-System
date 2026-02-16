@@ -30,8 +30,10 @@ model Organization {
   employees        EmployeeProfile[]
   leaveTypes       LeaveType[]
   leaveRequests    LeaveRequest[]
+  leaveBalances    LeaveBalance[]
   attendance       AttendanceRecord[]
   salaries         SalaryRecord[]
+  notifications    Notification[]
   settings         CompanySetting?
   createdAt        DateTime            @default(now())
   updatedAt        DateTime            @updatedAt
@@ -94,7 +96,9 @@ model EmployeeProfile {
   department               Department?        @relation(fields: [departmentID], references: [id], onDelete: SetNull)
   attendance               AttendanceRecord[]
   leaves                   LeaveRequest[]
+  leaveBalances            LeaveBalance[]
   salaries                 SalaryRecord[]
+  notifications            Notification[]
   createdAt                DateTime           @default(now())
   updatedAt                DateTime           @updatedAt
 
@@ -110,6 +114,7 @@ model LeaveType {
   organizationID String
   organization   Organization   @relation(fields: [organizationID], references: [id], onDelete: Cascade)
   leaves         LeaveRequest[]
+  balances       LeaveBalance[]
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 
@@ -172,6 +177,41 @@ model SalaryRecord {
 
   @@unique([employeeID, month, year])
   @@index([organizationID, year, month])
+}
+
+
+model LeaveBalance {
+  id             String          @id @default(cuid())
+  organizationID String
+  organization   Organization    @relation(fields: [organizationID], references: [id], onDelete: Cascade)
+  employeeID     String
+  employee       EmployeeProfile @relation(fields: [employeeID], references: [id], onDelete: Cascade)
+  leaveTypeID    String
+  leaveType      LeaveType       @relation(fields: [leaveTypeID], references: [id], onDelete: Cascade)
+  totalDays      Float           @default(0)
+  usedDays       Float           @default(0)
+  pendingDays    Float           @default(0)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@unique([employeeID, leaveTypeID])
+  @@index([organizationID, employeeID])
+}
+
+model Notification {
+  id             String          @id @default(cuid())
+  organizationID String
+  organization   Organization    @relation(fields: [organizationID], references: [id], onDelete: Cascade)
+  employeeID     String?
+  employee       EmployeeProfile? @relation(fields: [employeeID], references: [id], onDelete: SetNull)
+  title          String
+  description    String
+  category       String          @default("GENERAL")
+  isRead         Boolean         @default(false)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([organizationID, employeeID, isRead])
 }
 
 model CompanySetting {

@@ -40,7 +40,13 @@ export const HRLogin = () => {
 
         if (HRState.isAuthenticated) {
             loadingbar.current?.complete()
-            navigate("/auth/HR/dashboard")
+            const sessionData = HRState?.data || {}
+            sessionStorage.setItem('ems_user_session', JSON.stringify({
+                role: sessionData.role || 'Super Admin',
+                panel: sessionData.panel || 'Super Admin',
+                organizationID: sessionData.organizationID || null,
+            }))
+            navigate('/HR/dashboard/dashboard-data')
         }
     }, [HRState.isAuthenticated, dispatch, navigate])
 

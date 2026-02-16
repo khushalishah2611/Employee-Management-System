@@ -29,8 +29,14 @@ export const EmployeeLogin = () => {
 
 
     const RedirectToDashbaord = () => {
+        const sessionData = EmployeeState?.data || {}
+        sessionStorage.setItem('ems_user_session', JSON.stringify({
+            role: sessionData.role || 'EMPLOYEE',
+            panel: sessionData.panel || 'Employee',
+            organizationID: sessionData.organizationID || null,
+        }))
         loadingbar.current.complete()
-        navigate("/auth/employee/employee-dashboard")
+        navigate('/auth/employee/employee-dashboard')
     }
 
     if (EmployeeState.error.status) {

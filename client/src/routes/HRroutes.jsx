@@ -43,35 +43,19 @@ export const HRRoutes = [
       },
       {
         path: '/HR/dashboard/salaries',
-        element: <HRModulePage title="Salary Module" description="Manage salary structures, monthly payouts, and payslip related data here." />,
-      },
-      {
-        path: '/HR/dashboard/notices',
-        element: <HRDashboardPage />,
+        element: <HRModulePage title='Salary Management' description='Configure components, process monthly salary, and manage payslip/history for all employees.' />,
       },
       {
         path: '/HR/dashboard/leaves',
-        element: <HRModulePage title="Leave Module" description="Track leave requests, approvals, and balances from this section." />,
+        element: <HRModulePage title='Leave Management' description='Create leave types, approve/reject requests, and manage leave balances.' />,
       },
       {
         path: '/HR/dashboard/attendances',
-        element: <HRModulePage title="Attendance Module" description="Review and manage employee attendance records and statuses." />,
+        element: <HRModulePage title='Attendance Management' description='Track attendance organization-wide, perform corrections, and maintain attendance rules.' />,
       },
       {
-        path: '/HR/dashboard/recruitment',
-        element: <HRDashboardPage />,
-      },
-      {
-        path: '/HR/dashboard/interview-insights',
-        element: <HRDashboardPage />,
-      },
-      {
-        path: '/HR/dashboard/requests',
-        element: <HRDashboardPage />,
-      },
-      {
-        path: '/HR/dashboard/hr-profiles',
-        element: <HRDashboardPage />,
+        path: '/HR/dashboard/settings',
+        element: <HRModulePage title='System Settings' description='Manage company details, working hours, leave rules, salary rules, and marking policies.' />,
       },
     ],
   },

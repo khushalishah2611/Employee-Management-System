@@ -156,7 +156,7 @@ export const HandleHRLogin = async (req, res) => {
     GenerateJwtTokenAndSetCookiesHR(res, HR.id, HR.role, HR.organizationID)
     await prisma.humanResources.update({ where: { id: HR.id }, data: { lastlogin: new Date() } })
 
-    return res.status(200).json({ success: true, message: 'HR Login Successfull', type: 'HRLogin' })
+    return res.status(200).json({ success: true, message: 'HR Login Successfull', type: 'HRLogin', role: HR.role, panel: 'Super Admin', organizationID: HR.organizationID })
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Internal Server Error', error, type: 'HRLogin' })
   }
@@ -177,7 +177,7 @@ export const HandleHRCheck = async (req, res) => {
     if (!HR) {
       return res.status(404).json({ success: false, message: 'HR not found', type: 'checkHR' })
     }
-    return res.status(200).json({ success: true, message: 'HR Already Logged In', type: 'checkHR', role: HR.role, panel: 'Super Admin' })
+    return res.status(200).json({ success: true, message: 'HR Already Logged In', type: 'checkHR', role: HR.role, panel: 'Super Admin', organizationID: HR.organizationID })
   } catch (error) {
     return res.status(500).json({ success: false, error, message: 'internal error', type: 'checkHR' })
   }
