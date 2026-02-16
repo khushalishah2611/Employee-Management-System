@@ -122,7 +122,7 @@ The EMS addresses key challenges faced by small to medium-sized organizations, s
 
 * Backend: Node.js, Express.js, RESTful APIs
 
-* Database: MongoDB (NoSQL) with Prisma ORM for API data access
+* Database: MySQL with Prisma ORM
 
 * Authentication: JSON Web Tokens (JWT)
 
@@ -182,8 +182,8 @@ Create a .env file in the server directory and configure the following :
 
 ```
 
-MONGODB_URI = your mongoDB connection URI
-DATABASE_URL = same mongoDB connection URI (for Prisma)
+DATABASE_URL = your MySQL database connection URL (Prisma)
+MONGODB_URI = optional (only for legacy MongoDB modules still not migrated)
 appName = your app name
 PORT = your port
 MAILTRAP_TOKEN = your mailtrap token

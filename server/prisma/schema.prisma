@@ -3,43 +3,39 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 model Organization {
-  id               String           @id @default(auto()) @map("_id") @db.ObjectId
+  id               String           @id @default(cuid())
   name             String           @unique
   description      String
-  employees        String[]         @db.ObjectId
-  HRs              String[]         @db.ObjectId
   OrganizationURL  String           @unique
   OrganizationMail String           @unique
   hrUsers          HumanResources[]
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
-
-  @@map("organizations")
 }
 
 model HumanResources {
-  id                       String        @id @default(auto()) @map("_id") @db.ObjectId
+  id                       String       @id @default(cuid())
   firstname                String
   lastname                 String
-  email                    String        @unique
+  email                    String       @unique
   password                 String
   contactnumber            String
-  role                     String        @default("HR-Admin")
-  lastlogin                DateTime      @default(now())
-  isverified               Boolean       @default(false)
+  role                     String       @default("HR-Admin")
+  lastlogin                DateTime     @default(now())
+  isverified               Boolean      @default(false)
   verificationtoken        String?
   verificationtokenexpires DateTime?
   resetpasswordtoken       String?
   resetpasswordexpires     DateTime?
-  organizationID           String?       @db.ObjectId
-  organization             Organization? @relation(fields: [organizationID], references: [id])
-  createdAt                DateTime      @default(now())
-  updatedAt                DateTime      @updatedAt
+  organizationID           String
+  organization             Organization @relation(fields: [organizationID], references: [id], onDelete: Cascade)
+  createdAt                DateTime     @default(now())
+  updatedAt                DateTime     @updatedAt
 
-  @@map("humanresources")
+  @@index([organizationID])
 }

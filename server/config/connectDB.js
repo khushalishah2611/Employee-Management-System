@@ -3,19 +3,17 @@ import { prisma } from '../lib/prisma.js'
 
 export const ConnectDB = async () => {
   try {
-    const mongoUri = process.env.MONGODB_URI || process.env.DATABASE_URL
-
-    if (!mongoUri) {
-      throw new Error('MONGODB_URI or DATABASE_URL is required')
+    if (!process.env.DATABASE_URL) {
+      throw new Error('DATABASE_URL is required for MySQL Prisma connection')
     }
 
-    await Promise.all([
-      mongoose.connect(mongoUri),
-      prisma.$connect(),
-    ])
+    await prisma.$connect()
+    console.log('MySQL connected through Prisma...')
 
-    console.log('MongoDB connected...')
-    console.log('Prisma connected...')
+    if (process.env.MONGODB_URI) {
+      await mongoose.connect(process.env.MONGODB_URI)
+      console.log('MongoDB connected for legacy modules...')
+    }
   } catch (error) {
     console.error('Error connecting to database:', error.message)
     process.exit(1)

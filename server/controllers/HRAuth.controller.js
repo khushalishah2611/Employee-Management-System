@@ -49,11 +49,6 @@ export const HandleHRSignup = async (req, res) => {
         },
       })
 
-      await prisma.organization.update({
-        where: { id: organization.id },
-        data: { HRs: { push: newHR.id } },
-      })
-
       GenerateJwtTokenAndSetCookiesHR(res, newHR.id, newHR.role, organization.id)
       const VerificationEmailStatus = await SendVerificationEmail(email, verificationcode)
 
@@ -73,8 +68,6 @@ export const HandleHRSignup = async (req, res) => {
           description,
           OrganizationURL,
           OrganizationMail,
-          employees: [],
-          HRs: [],
         },
       })
 
@@ -90,11 +83,6 @@ export const HandleHRSignup = async (req, res) => {
           verificationtoken: verificationcode,
           verificationtokenexpires: verificationExpiry,
         },
-      })
-
-      await tx.organization.update({
-        where: { id: newOrganization.id },
-        data: { HRs: { push: newHR.id } },
       })
 
       return { newOrganization, newHR }
