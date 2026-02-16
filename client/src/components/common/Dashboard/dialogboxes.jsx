@@ -127,6 +127,27 @@ export const EmployeeDetailsDialogBox = ({ EmployeeID }) => {
         return employee
     }
     const employeeData = FetchEmployeeData(EmployeeID)
+
+    if (!employeeData) {
+        return (
+            <div className="Employees-Details-container">
+                <Dialog>
+                    <div>
+                        <DialogTrigger className="btn-sm btn-blue-700 text-md border-2 border-blue-800 min-[250px]:px-2 min-[250px]:py-1 sm:px-1 sm:py-0.5 xl:px-2 xl:py-1 rounded-md hover:bg-blue-800 hover:text-white">View</DialogTrigger>
+                    </div>
+                    <DialogContent className="max-w-[315px] lg:max-w-[55vw] 2xl:max-w-[45vw]">
+                        <p className="font-bold text-lg text-center">Employee details are not available right now.</p>
+                    </DialogContent>
+                </Dialog>
+            </div>
+        )
+    }
+
+    const noticeCount = employeeData.notice?.length || 0
+    const salaryCount = employeeData.salary?.length || 0
+    const leaveRequestCount = employeeData.leaverequest?.length || 0
+    const requestCount = employeeData.generaterequest?.length || 0
+
     return (
         <div className="Employees-Details-container">
             <Dialog>
@@ -169,19 +190,19 @@ export const EmployeeDetailsDialogBox = ({ EmployeeID }) => {
                             <div className="details-group-1 flex flex-col gap-3">
                                 <div className="label-value-pair flex items-center gap-2">
                                     <label className="font-bold md:text-sm xl:text-lg">Notices :</label>
-                                    <p className="md:text-sm xl:text-lg">{employeeData.notice.length}</p>
+                                    <p className="md:text-sm xl:text-lg">{noticeCount}</p>
                                 </div>
                                 <div className="label-value-pair flex items-center gap-2">
                                     <label className="font-bold md:text-sm xl:text-lg">Salary Records :</label>
-                                    <p className="md:text-sm xl:text-lg">{employeeData.salary.length}</p>
+                                    <p className="md:text-sm xl:text-lg">{salaryCount}</p>
                                 </div>
                                 <div className="label-value-pair flex items-center gap-2">
                                     <label className="font-bold md:text-sm xl:text-lg">Leave Requests :</label>
-                                    <p className="md:text-sm xl:text-lg">{employeeData.leaverequest.length}</p>
+                                    <p className="md:text-sm xl:text-lg">{leaveRequestCount}</p>
                                 </div>
                                 <div className="label-value-pair flex items-center gap-2">
                                     <label className="font-bold md:text-sm xl:text-lg">Requests :</label>
-                                    <p className="md:text-sm xl:text-lg">{employeeData.generaterequest.length}</p>
+                                    <p className="md:text-sm xl:text-lg">{requestCount}</p>
                                 </div>
                                 <div className="label-value-pair flex items-center gap-2">
                                     <label className="font-bold md:text-sm xl:text-lg">Email Verify :</label>
